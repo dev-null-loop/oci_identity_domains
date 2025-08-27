@@ -1,29 +1,28 @@
 resource "oci_identity_domains_user" "this" {
-  idcs_endpoint = var.idcs_endpoint # data.oci_identity_domain.default.url
-  schemas = [
-    "urn:ietf:params:scim:schemas:core:2.0:User",
-    "urn:ietf:params:scim:schemas:oracle:idcs:extension:userState:User",
-    "urn:ietf:params:scim:schemas:oracle:idcs:extension:OCITags",
-    "urn:ietf:params:scim:schemas:oracle:idcs:extension:capabilities:User",
-    "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User",
-  ]
+  idcs_endpoint = var.idcs_endpoint
+  schemas       = var.schemas
   user_name     = var.user_name
   authorization = var.authorization
   description   = var.description
   display_name  = var.display_name
   emails { /* One and only one "emails" block needs to have "primary" set to true */
     type      = "work"
-    value     = "value@email.com"
+    value     = "bogdan.m.darie@oracle.com"
     primary   = true
     secondary = null
     verified  = null
   }
+  # emails { # this is not sufficient
+  #   type  = "recovery"
+  #   value = "recovery@oracle.com"
+  # }
 
   name {
-    given_name  = "payoneer master Bucket"
-    family_name = "Technical"
-  }
+    family_name = "User"
+    formatted   = ""
+    given_name  = "Oracle"
 
+  }
   urnietfparamsscimschemasoracleidcsextensioncapabilities_user {
     can_use_api_keys                 = true
     can_use_auth_tokens              = false
