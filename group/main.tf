@@ -1,3 +1,14 @@
+data "oci_identity_domains_users" "these" {
+  idcs_endpoint = var.idcs_endpoint
+  user_filter   = "displayName sw \"B\""
+}
+
+locals {
+  users = { for user in data.oci_identity_domains_users.these.users[*] :
+    (user.display_name) => user.id
+  }
+}
+
 resource "oci_identity_domains_group" "this" {
   display_name  = var.display_name
   idcs_endpoint = var.idcs_endpoint
