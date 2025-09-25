@@ -5,157 +5,111 @@ resource "oci_identity_domains_user" "this" {
   authorization = var.authorization
   description   = var.description
   display_name  = var.display_name
-  emails { /* One and only one "emails" block needs to have "primary" set to true */
-    type      = "work"
-    value     = "bogdan.m.darie@oracle.com"
-    primary   = true
-    secondary = null
-    verified  = null
+  dynamic "emails" { /* One and only one "emails" block needs to have "primary" set to true */
+    for_each = var.emails
+    content {
+      type      = emails.value.type
+      value     = emails.value.value
+      primary   = emails.value.primary
+      secondary = emails.value.secondary
+      verified  = emails.value.verified
+    }
   }
-  # emails { # this is not sufficient
-  #   type  = "recovery"
-  #   value = "recovery@oracle.com"
-  # }
-
-  name {
-    family_name = "User"
-    formatted   = ""
-    given_name  = "Oracle"
-
+  dynamic "name" {
+    for_each = var.name[*]
+    content {
+      family_name      = name.value.family_name
+      formatted        = name.value.formatted
+      given_name       = name.value.given_name
+      honorific_prefix = name.value.honorific_prefix
+      honorific_suffix = name.value.honorific_suffix
+      middle_name      = name.value.middle_name
+    }
+  }
+  dynamic "urnietfparamsscimschemasoracleidcsextension_oci_tags" {
+    for_each = var.urnietfparamsscimschemasoracleidcsextension_oci_tags[*]
+    iterator = uot
+    content {
+      defined_tags {
+	key       = uot.value.defined_tags.key
+	namespace = uot.value.defined_tags.namespace
+	value     = uot.value.defined_tags.value
+      }
+      freeform_tags {
+	key   = uot.value.freeform_tags.key
+	value = uot.value.freeform_tags.value
+      }
+    }
   }
   urnietfparamsscimschemasoracleidcsextensioncapabilities_user {
     can_use_api_keys                 = true
-    can_use_auth_tokens              = false
+    can_use_auth_tokens              = true
     can_use_console                  = false
-    can_use_console_password         = false
-    can_use_customer_secret_keys     = false
+    can_use_console_password         = true
+    can_use_customer_secret_keys     = true
     can_use_db_credentials           = true
     can_use_oauth2client_credentials = true
-    can_use_smtp_credentials         = false
+    can_use_smtp_credentials         = true
+  }
+  urnietfparamsscimschemasoracleidcsextensionmfa_user {
+    login_attempts                  = 0
+    mfa_enabled_on                  = null
+    mfa_ignored_apps                = []
+    mfa_status                      = "ENROLLED"
+    preferred_authentication_factor = "PUSH"
+    preferred_authentication_method = null
+    preferred_third_party_vendor    = null
+
+    # preferred_device {
+    #   display = null
+    #   ref     = "https://idcs-3bd620bcdd6f4b5abd41fc79861ae4b7.identity.oraclecloud.com:443/admin/v1/Devices/10d48ff3532b4042a3a7ff924b35bc99"
+    #   value   = "10d48ff3532b4042a3a7ff924b35bc99"
+    # }
+  }
+
+  urnietfparamsscimschemasoracleidcsextensionuser_state_user {
+    last_failed_login_date     = null
+    last_successful_login_date = null
+    # login_attempts                 = 0
+    max_concurrent_sessions        = 0
+    previous_successful_login_date = null
+    # recovery_attempts              = 0
+    # recovery_enroll_attempts       = 0
+
+    locked {
+      expired   = false
+      lock_date = null
+      on        = false
+      reason    = 0
+    }
+  }
+  urnietfparamsscimschemasoracleidcsextensionuser_user {
+    account_recovery_required = false
+    # accounts                  = []
+    # app_roles                 = []
+    # applicable_authentication_target_app = []
+    bypass_notification         = false
+    creation_mechanism          = null
+    do_not_show_getting_started = false
+    # grants                               = []
+    group_membership_last_modified = null
+    # idcs_app_roles_limited_to_groups           = []
+    # is_account_recovery_enrolled               = false
+    is_authentication_delegated                = false
+    is_federated_user                          = false
+    is_group_membership_normalized             = false
+    is_group_membership_synced_to_users_groups = false
+    notification_email_template_id             = null
+    preferred_ui_landing_page                  = "OciConsole"
+    service_user                               = false
+    status                                     = null
+    # support_accounts                           = []
+    user_flow_controlled_by_external_client = false
+    user_provider                           = null
+    # user_token                                 = []
   }
 }
 
-# resource "oci_identity_domains_user" "test_user" {
-#   #Required
-#   idcs_endpoint = data.oci_identity_domain.test_domain.url
-#   schemas       = ["urn:ietf:params:scim:schemas:core:2.0:User"]
-#   user_name     = "userName"
-#   /* Note: In most cases, a primary email is REQUIRED to create a user. Otherwise you might get a 400 error. Please see "emails" block below. */
-
-#   #Optional
-#   active = var.user_active
-#   addresses {
-#     #Required
-#     type = var.user_addresses_type
-
-#     #Optional
-#     country        = var.user_addresses_country
-#     formatted      = var.user_addresses_formatted
-#     locality       = var.user_addresses_locality
-#     postal_code    = var.user_addresses_postal_code
-#     primary        = var.user_addresses_primary
-#     region         = var.user_addresses_region
-#     street_address = var.user_addresses_street_address
-#   }
-#   attribute_sets = []
-#   attributes     = ""
-#   authorization  = var.user_authorization
-#   description    = var.user_description
-#   display_name   = var.user_display_name
-
-#   /* One and only one "emails" block needs to have "primary" set to true */
-#   emails {
-#     #Required
-#     type  = var.user_emails_type
-#     value = var.user_emails_value
-
-#     #Optional
-#     primary   = true
-#     secondary = var.user_emails_secondary
-#     verified  = var.user_emails_verified
-#   }
-#   /* Note:
-#       If a new user is created without a recovery email being set, we automatically add one using the primary email value,
-#       to ensure the account can be recovered (when account recovery feature is enabled in the current domain).
-#       So it is recommended to set an email of type "recovery" like below. If not, it is expected to see an update about
-#       recovery email when plan/apply after creation.
-#     */
-#   emails {
-#     #Required
-#     type  = "recovery"
-#     value = var.user_emails_value
-#   }
-#   entitlements {
-#     #Required
-#     type  = var.user_entitlements_type
-#     value = var.user_entitlements_value
-
-#     #Optional
-#     display = var.user_entitlements_display
-#     primary = var.user_entitlements_primary
-#   }
-#   external_id  = "externalId"
-#   force_delete = var.user_force_delete
-#   id           = var.user_id
-#   ims {
-#     #Required
-#     type  = var.user_ims_type
-#     value = var.user_ims_value
-
-#     #Optional
-#     display = var.user_ims_display
-#     primary = var.user_ims_primary
-#   }
-#   locale = var.user_locale
-#   name {
-
-#     #Optional
-#     family_name      = var.user_name_family_name
-#     formatted        = var.user_name_formatted
-#     given_name       = var.user_name_given_name
-#     honorific_prefix = var.user_name_honorific_prefix
-#     honorific_suffix = var.user_name_honorific_suffix
-#     middle_name      = var.user_name_middle_name
-#   }
-#   nick_name = var.user_nick_name
-#   ocid      = var.user_ocid
-#   password  = var.user_password
-#   phone_numbers {
-#     #Required
-#     type  = var.user_phone_numbers_type
-#     value = var.user_phone_numbers_value
-
-#     #Optional
-#     primary = var.user_phone_numbers_primary
-#   }
-#   photos {
-#     #Required
-#     type  = var.user_photos_type
-#     value = var.user_photos_value
-
-#     #Optional
-#     display = var.user_photos_display
-#     primary = var.user_photos_primary
-#   }
-#   preferred_language           = var.user_preferred_language
-#   profile_url                  = var.user_profile_url
-#   resource_type_schema_version = var.user_resource_type_schema_version
-#   roles {
-#     #Required
-#     type  = var.user_roles_type
-#     value = var.user_roles_value
-
-#     #Optional
-#     display = var.user_roles_display
-#     primary = var.user_roles_primary
-#   }
-#   tags {
-#     #Required
-#     key   = var.user_tags_key
-#     value = var.user_tags_value
-#   }
-#   timezone = var.user_timezone
-#   title    = var.user_title
 #   urnietfparamsscimschemasextensionenterprise20user {
 
 #     #Optional
