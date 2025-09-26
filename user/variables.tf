@@ -57,17 +57,23 @@ variable "name" {
 }
 
 variable "urnietfparamsscimschemasoracleidcsextension_oci_tags" {
+  type = list(object({
+    key       = string
+    namespace = string
+    value     = string
+  }))
+  default = []
+}
+
+variable "urnietfparamsscimschemasoracleidcsextensioncapabilities_user" {
   type = object({
-    defined_tags = object({
-      key       = string
-      namespace = string
-      value     = string
-    })
-    freeform_tags = object({
-      key       = string
-      namespace = string
-      value     = string
-    })
+    can_use_api_keys                 = bool
+    can_use_auth_tokens              = bool
+    can_use_console_password         = bool
+    can_use_customer_secret_keys     = bool
+    can_use_db_credentials           = bool
+    can_use_oauth2client_credentials = bool
+    can_use_smtp_credentials         = bool
   })
   default = null
 }
