@@ -22,7 +22,6 @@ resource "oci_identity_domains_app" "this" {
     value         = var.based_on_template.value
     well_known_id = var.based_on_template.well_known_id
   }
-  admin_roles
   client_ip_checking        = var.client_ip_checking
   client_type               = var.client_type
   delegated_service_names   = var.delegated_service_names
