@@ -22,7 +22,7 @@ resource "oci_identity_domains_app" "this" {
     value         = var.based_on_template.value
     well_known_id = var.based_on_template.well_known_id
   }
-
+  admin_roles
   client_ip_checking        = var.client_ip_checking
   client_type               = var.client_type
   delegated_service_names   = var.delegated_service_names
@@ -46,16 +46,4 @@ resource "oci_identity_domains_app" "this" {
   secondary_audiences       = var.secondary_audiences
   show_in_my_apps           = var.show_in_my_apps
   trust_scope               = var.trust_scope
-  # urnietfparamsscimschemasoracleidcsextension_oci_tags {
-  #   defined_tags {
-  #     key       = "CreatedOn"
-  #     namespace = "Oracle-Tags"
-  #     value     = "2023-02-23T11:30:38.883Z"
-  #   }
-  #   defined_tags {
-  #     key       = "CreatedBy"
-  #     namespace = "Oracle-Tags"
-  #     value     = "default/george.constantin@oracle.com"
-  #   }
-  # }
 }

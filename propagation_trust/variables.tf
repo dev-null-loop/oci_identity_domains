@@ -71,8 +71,12 @@ variable "description" {
 
 variable "impersonation_service_users" {
   description = "(Optional) (Updatable) The Impersonating Principal."
-  type        = list(string)
-  default     = []
+  type = list(object({
+    rule  = optional(string)
+    value = optional(string)
+    ocid  = optional(string)
+  }))
+  default = []
 }
 
 variable "keytab" {

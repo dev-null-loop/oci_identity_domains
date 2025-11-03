@@ -46,24 +46,25 @@ resource "oci_identity_domains_user" "this" {
       can_use_smtp_credentials         = uu.value.can_use_smtp_credentials
     }
   }
-  urnietfparamsscimschemasoracleidcsextensionmfa_user {
-    login_attempts                  = 0
-    mfa_ignored_apps                = []
-    mfa_status                      = "ENROLLED"
-    preferred_authentication_factor = "PUSH"
-    preferred_device {
-      value = "10d48ff3532b4042a3a7ff924b35bc99"
-    }
-  }
-  urnietfparamsscimschemasoracleidcsextensionuser_state_user {
-    locked {
-      on = false
-    }
-  }
+  # urnietfparamsscimschemasoracleidcsextensionmfa_user {
+  #   login_attempts                  = 0
+  #   mfa_ignored_apps                = []
+  #   mfa_status                      = "ENROLLED"
+  #   preferred_authentication_factor = "PUSH"
+  #   preferred_device {
+  #     value = "10d48ff3532b4042a3a7ff924b35bc99"
+  #   }
+  # }
+  # urnietfparamsscimschemasoracleidcsextensionuser_state_user {
+  #   locked {
+  #     on = false
+  #   }
+  # }
   urnietfparamsscimschemasoracleidcsextensionuser_user {
-    creation_mechanism        = ""
-    is_federated_user         = false
-    preferred_ui_landing_page = "OciConsole"
-    user_provider             = ""
+    service_user = true
+    #creation_mechanism = ""
+    #is_federated_user  = true
+    # preferred_ui_landing_page = "OciConsole"
+    # user_provider = ""
   }
 }
