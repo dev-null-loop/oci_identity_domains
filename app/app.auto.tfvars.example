@@ -1,0 +1,20 @@
+allowed_grants = [
+  "urn:ietf:params:oauth:grant-type:jwt-bearer",
+  "client_credentials",
+  "refresh_token",
+]
+
+based_on_template = {
+  value         = "CustomWebAppTemplateId"
+  well_known_id = "CustomWebAppTemplateId"
+}
+client_ip_checking = "anywhere"
+client_type        = "confidential"
+display_name       = "bd-oidc"
+idcs_endpoint      = "https://idcs-...identity.oraclecloud.com:443"
+schemas = [
+  "urn:ietf:params:scim:schemas:oracle:idcs:App",
+  "urn:ietf:params:scim:schemas:oracle:idcs:extension:OCITags",
+]
+trust_scope    = "Explicit"
+allowed_scopes = []
