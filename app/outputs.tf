@@ -1,27 +1,24 @@
 output "id" {
-  value = oci_identity_domains_app.this.id
-}
-
-output "application_id" {
-  value = oci_identity_domains_app.this.id
-}
-
-
-output "idcs_endpoint" {
-  value = oci_identity_domains_app.this.idcs_endpoint
+  description = "The identifier of the resource."
+  value       = oci_identity_domains_app.this.id
 }
 
 output "name" {
-  value = oci_identity_domains_app.this.name
+  description = "The name of the resource."
+  value       = oci_identity_domains_app.this.name
 }
 
-output "client_id" {
-  value = oci_identity_domains_app.this.name
+output "display_name" {
+  description = "The display_name of the resource."
+  value       = oci_identity_domains_app.this.display_name
 }
 
 output "ocid" {
-  value = oci_identity_domains_app.this.ocid
+  description = "The ocid of the resource."
+  value       = oci_identity_domains_app.this.ocid
 }
+
 output "client_secret" {
-  value = oci_identity_domains_app.this.client_secret
+  description = "The client_secret of the resource."
+  value       = oci_identity_domains_app.this.client_secret
 }
