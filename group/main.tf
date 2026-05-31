@@ -18,7 +18,7 @@ resource "oci_identity_domains_group" "this" {
   non_unique_display_name      = var.non_unique_display_name
   ocid                         = var.ocid
   resource_type_schema_version = var.resource_type_schema_version
-  schemas                      = var.schemas
+  schemas                      = sort(var.schemas)
   dynamic "tags" {
     for_each = var.tags != null ? var.tags : []
     iterator = ta
@@ -87,5 +87,13 @@ resource "oci_identity_domains_group" "this" {
     content {
       requestable = ug.value.requestable
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      members,
+      schemas,
+      tags,
+      urnietfparamsscimschemasoracleidcsextension_oci_tags,
+    ]
   }
 }

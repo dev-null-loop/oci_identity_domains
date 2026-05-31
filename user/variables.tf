@@ -313,7 +313,6 @@ variable "urnietfparamsscimschemasoracleidcsextensionmfa_user" {
       value                   = string
     })))
     login_attempts                  = optional(number)
-    mfa_enabled_on                  = optional(string)
     mfa_ignored_apps                = optional(list(string))
     mfa_status                      = optional(string)
     preferred_authentication_factor = optional(string)

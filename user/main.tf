@@ -234,7 +234,6 @@ resource "oci_identity_domains_user" "this" {
         }
       }
       login_attempts                  = uu.value.login_attempts
-      mfa_enabled_on                  = uu.value.mfa_enabled_on
       mfa_ignored_apps                = uu.value.mfa_ignored_apps
       mfa_status                      = uu.value.mfa_status
       preferred_authentication_factor = uu.value.preferred_authentication_factor
