@@ -1,73 +1,91 @@
-data "oci_identity_domains_users" "these" {
-  idcs_endpoint = var.idcs_endpoint
-  user_filter   = "displayName sw \"B\""
-}
-
-locals {
-  users = { for user in data.oci_identity_domains_users.these.users[*] :
-    (user.display_name) => user.id
-  }
-}
-
 resource "oci_identity_domains_group" "this" {
-  display_name  = var.display_name
-  idcs_endpoint = var.idcs_endpoint
-  schemas       = var.schemas
+  attribute_sets = var.attribute_sets
+  attributes     = var.attributes
+  authorization  = var.authorization
+  display_name   = var.display_name
+  external_id    = var.external_id
+  force_delete   = var.force_delete
+  idcs_endpoint  = var.idcs_endpoint
   dynamic "members" {
-    for_each = try(var.members, [])
+    for_each = var.members != null ? var.members : []
+    iterator = me
     content {
-      type  = members.value.type
-      value = local.users[members.value.value]
-      ocid  = members.value.ocid
+      ocid  = me.value.ocid
+      type  = me.value.type
+      value = me.value.value
     }
   }
   non_unique_display_name      = var.non_unique_display_name
   ocid                         = var.ocid
   resource_type_schema_version = var.resource_type_schema_version
+  schemas                      = var.schemas
   dynamic "tags" {
-    for_each = var.tags[*]
+    for_each = var.tags != null ? var.tags : []
+    iterator = ta
     content {
-      key   = tags.value.key
-      value = tags.value.value
+      key   = ta.value.key
+      value = ta.value.value
     }
   }
   dynamic "urnietfparamsscimschemasoracleidcsextension_oci_tags" {
     for_each = var.urnietfparamsscimschemasoracleidcsextension_oci_tags[*]
-    iterator = i
+    iterator = uot
     content {
       dynamic "defined_tags" {
-	for_each = i.value.defined_tags
-	content {
-	  key       = defined_tags.value.key
-	  namespace = defined_tags.value.namespace
-	  value     = defined_tags.value.value
-	}
+        for_each = uot.value.defined_tags != null ? uot.value.defined_tags : []
+        iterator = dt
+        content {
+          key       = dt.value.key
+          namespace = dt.value.namespace
+          value     = dt.value.value
+        }
       }
       dynamic "freeform_tags" {
-	for_each = i.value.local.freeform_tags
-	content {
-	  key   = freeform_tags.value.key
-	  value = freeform_tags.value.value
-	}
+        for_each = uot.value.freeform_tags != null ? uot.value.freeform_tags : []
+        iterator = ft
+        content {
+          key   = ft.value.key
+          value = ft.value.value
+        }
       }
     }
   }
-  # urnietfparamsscimschemasoracleidcsextensiondynamic_group {
-  #   membership_rule = var.group_urnietfparamsscimschemasoracleidcsextensiondynamic_group_membership_rule
-  #   membership_type = var.group_urnietfparamsscimschemasoracleidcsextensiondynamic_group_membership_type
-  # }
-  # urnietfparamsscimschemasoracleidcsextensiongroup_group {
-  #   creation_mechanism = var.group_urnietfparamsscimschemasoracleidcsextensiongroup_group_creation_mechanism
-  #   description        = var.group_urnietfparamsscimschemasoracleidcsextensiongroup_group_description
-  #   owners {
-  #     type  = var.group_urnietfparamsscimschemasoracleidcsextensiongroup_group_owners_type
-  #     value = var.group_urnietfparamsscimschemasoracleidcsextensiongroup_group_owners_value
-  #   }
-  # }
-  # urnietfparamsscimschemasoracleidcsextensionposix_group {
-  #   gid_number = var.group_urnietfparamsscimschemasoracleidcsextensionposix_group_gid_number
-  # }
-  # urnietfparamsscimschemasoracleidcsextensionrequestable_group {
-  #   requestable = var.group_urnietfparamsscimschemasoracleidcsextensionrequestable_group_requestable
-  # }
+  dynamic "urnietfparamsscimschemasoracleidcsextensiondynamic_group" {
+    for_each = var.urnietfparamsscimschemasoracleidcsextensiondynamic_group[*]
+    iterator = ug
+    content {
+      membership_rule = ug.value.membership_rule
+      membership_type = ug.value.membership_type
+    }
+  }
+  dynamic "urnietfparamsscimschemasoracleidcsextensiongroup_group" {
+    for_each = var.urnietfparamsscimschemasoracleidcsextensiongroup_group[*]
+    iterator = ug
+    content {
+      creation_mechanism = ug.value.creation_mechanism
+      description        = ug.value.description
+      dynamic "owners" {
+        for_each = ug.value.owners != null ? ug.value.owners : []
+        iterator = ow
+        content {
+          type  = ow.value.type
+          value = ow.value.value
+        }
+      }
+    }
+  }
+  dynamic "urnietfparamsscimschemasoracleidcsextensionposix_group" {
+    for_each = var.urnietfparamsscimschemasoracleidcsextensionposix_group[*]
+    iterator = ug
+    content {
+      gid_number = ug.value.gid_number
+    }
+  }
+  dynamic "urnietfparamsscimschemasoracleidcsextensionrequestable_group" {
+    for_each = var.urnietfparamsscimschemasoracleidcsextensionrequestable_group[*]
+    iterator = ug
+    content {
+      requestable = ug.value.requestable
+    }
+  }
 }
